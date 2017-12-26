@@ -9,9 +9,9 @@ import com.markswell.githubconector.utils.GerenciadorContainerFragment;
 import com.markswell.githubconector.utils.RetrofitUtils;
 import com.markswell.githubconector.utils.Url;
 
-import java.io.IOException;
-
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,11 +38,19 @@ public class MainActivity extends AppCompatActivity {
     public void efetuarChamada(Retrofit retrofit) {
         UsuarioServices chamarUser = retrofit.create(UsuarioServices.class);
         Call<Usuario> call = chamarUser.getUsuario("markswell");
-        try {
-            Usuario body = call.execute().body();
-            body.getName();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        call.enqueue(new Callback<Usuario>() {
+            @Override
+            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                if(response.code() == 200){
+                    Usuario body = response.body();
+                    body.getName();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Usuario> call, Throwable t) {
+
+            }
+        });
     }
 }

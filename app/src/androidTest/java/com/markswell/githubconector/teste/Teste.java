@@ -12,8 +12,6 @@ import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 
-import java.io.IOException;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,8 +32,8 @@ public class Teste extends TestCase{
 
     public void testeUsuarioServicesNome(){
         prencherUsuario();
-        Log.i("markswell", CallBackUtils.user.getName());
-        assertEquals("Markswell Menezes" , CallBackUtils.user.getName());
+        Usuario user = CallBackUtils.user;
+        assertEquals("Markswell Menezes" , user.getName());
     }
 
 
@@ -48,12 +46,7 @@ public class Teste extends TestCase{
     public void efetuarChamada(Retrofit retrofit) {
         UsuarioServices chamarUser = retrofit.create(UsuarioServices.class);
         Call<Usuario> call = chamarUser.getUsuario("markswell");
-        try {
-            Usuario body = call.execute().body();
-            body.getName();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        call.enqueue(utils.obterCallBack());
     }
 
 }
