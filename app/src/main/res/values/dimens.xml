@@ -1,0 +1,14 @@
+<resources>
+    <!-- distancia -->
+    <dimen name="dezesseis">16dp</dimen>
+    <dimen name="dois">2dp</dimen>
+    <dimen name="oito">8dp</dimen>
+    <dimen name="zero">0dp</dimen>
+    <dimen name="cem">100dp</dimen>
+    <dimen name="centoecinquenta">150dp</dimen>
+    <dimen name="cinquenta">50dp</dimen>
+
+    <!-- fonte -->
+    <dimen name="vintedoissp">22sp</dimen>
+
+</resources>
