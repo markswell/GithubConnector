@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.markswell.githubconector.MainActivity;
 import com.markswell.githubconector.R;
 import com.markswell.githubconector.model.Repositorio;
 import com.markswell.githubconector.model.Usuario;
@@ -50,6 +51,7 @@ public class TelaUsuarioGithubFragment extends Fragment {
         iniciarRepositorios(arguments);
         iniciarImagem(view);
         popularListaRepositorios(view, repositorios);
+        MainActivity.ACESSADO = true;
     }
 
     private void iniciarImagem(View view) {

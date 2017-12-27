@@ -1,5 +1,6 @@
 package com.markswell.githubconector.fragments;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -32,20 +33,21 @@ public class TelaBuscaFragment extends Fragment {
     private EditText login;
     private Usuario usuarioGit;
     private List<Repositorio> repositoriosGit;
-
-    public TelaBuscaFragment() {
-    }
+    private ProgressDialog progressDoalog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
         View view = inflater.inflate(R.layout.fragment_tela_busca, container, false);
 
-        login = (EditText) view.findViewById(R.id.login);
-        fab = (FloatingActionButton) view.findViewById(R.id.fab);
-
-        fab.setOnClickListener(obterFabListener());
+        iniciarTela(view);
 
         return view;
+    }
+
+    private void iniciarTela(View view) {
+        login = (EditText) view.findViewById(R.id.login);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(obterFabListener());
     }
 
     private View.OnClickListener obterFabListener() {
@@ -55,7 +57,10 @@ public class TelaBuscaFragment extends Fragment {
                 String usuario = login.getText().toString();
                 Retrofit retrofit = getRetrofit();
                 try{
-                    obterUsuario(usuario, retrofit);
+                    if(!usuario.isEmpty())
+                        obterUsuario(usuario, retrofit);
+                    else
+                        Toast.makeText(getContext(), "Informe um usuário.", Toast.LENGTH_LONG).show();
 
                 }catch (Exception e){
                     Toast.makeText(getContext(), "Falha no processo.", Toast.LENGTH_LONG).show();
@@ -65,9 +70,19 @@ public class TelaBuscaFragment extends Fragment {
     }
 
     private void obterUsuario(String usuario, Retrofit retrofit) {
+
+        iniciarProgresBar();
         UsuarioServices usuarioServices = retrofit.create(UsuarioServices.class);
         Call<Usuario> call = usuarioServices.getUsuario(usuario);
         call.enqueue(getCallBackUsuario(usuario, retrofit));
+    }
+
+    private void iniciarProgresBar() {
+        progressDoalog = new ProgressDialog(getContext());
+        progressDoalog.setMessage("Carregando...");
+        progressDoalog.setTitle("Bucando");
+        //progressDoalog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDoalog.show();
     }
 
     private void alterarTela() {
@@ -95,14 +110,10 @@ public class TelaBuscaFragment extends Fragment {
         call.enqueue(getCallBackRepositorio());
     }
 
-
     private Retrofit getRetrofit() {
         RetrofitUtils retrofitUtils = new RetrofitUtils();
         return retrofitUtils.obterRetrofit(Url.URL.endereco);
     }
-
-
-
 
     public Callback<List<Repositorio>> getCallBackRepositorio() {
         return new Callback<List<Repositorio>>() {
@@ -123,7 +134,6 @@ public class TelaBuscaFragment extends Fragment {
         };
     }
 
-
     public Callback<Usuario> getCallBackUsuario(final String usuario, final Retrofit retrofit) {
         return new Callback<Usuario>() {
             @Override
@@ -131,11 +141,11 @@ public class TelaBuscaFragment extends Fragment {
                 if(response.isSuccessful()){
                     usuarioGit = response.body();
                     obterRepositorios(usuario, retrofit);
+                    progressDoalog.dismiss();
                 }
                 else {
-                    Toast.makeText(getContext(), "Não foi possivel encontrar o usuario.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Não foi possivel encontrar o usuário.", Toast.LENGTH_LONG).show();
                 }
-
             }
 
             @Override
