@@ -81,7 +81,6 @@ public class TelaBuscaFragment extends Fragment {
         progressDoalog = new ProgressDialog(getContext());
         progressDoalog.setMessage("Carregando...");
         progressDoalog.setTitle("Buscando");
-        //progressDoalog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDoalog.show();
     }
 
