@@ -1,20 +1,15 @@
 package com.markswell.githubconector.teste;
 
-import android.util.Log;
-
+import com.markswell.githubconector.model.Repositorio;
 import com.markswell.githubconector.model.Usuario;
+import com.markswell.githubconector.services.RepositorioServices;
 import com.markswell.githubconector.services.UsuarioServices;
 import com.markswell.githubconector.testeutils.CallBackUtils;
 import com.markswell.githubconector.utils.RetrofitUtils;
 import com.markswell.githubconector.utils.Url;
 import junit.framework.TestCase;
-
-import org.junit.After;
-import org.junit.Before;
-
+import java.util.List;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
@@ -25,15 +20,27 @@ public class Teste extends TestCase{
 
     private CallBackUtils utils;
 
-    public void testeUsuarioServicesNaoNulo(){
+    public void testeRetrofitUtils(){
+        Retrofit retrofit = new RetrofitUtils().obterRetrofit(Url.URL.endereco);
+        assert (retrofit != null);
+    }
+
+    public void testeUsuarioServices(){
         prencherUsuario();
         assert( !CallBackUtils.user.getName().isEmpty());
     }
 
-    public void testeUsuarioServicesNome(){
-        prencherUsuario();
-        Usuario user = CallBackUtils.user;
-        assertEquals("Markswell Menezes" , user.getName());
+    public void testeRepositorioSeriveces(){
+        preencherRepositorio();
+        assert(this.utils.listaRepositorios != null && this.utils.listaRepositorios.size() > 0);
+    }
+
+    private void preencherRepositorio() {
+        utils = new CallBackUtils();
+        Retrofit retrofit = new RetrofitUtils().obterRetrofit(Url.URL.endereco);
+        RepositorioServices services = retrofit.create(RepositorioServices.class);
+        Call<List<Repositorio>> repositorios = services.getRepositorios("markswell");
+        repositorios.enqueue(this.utils.obterCallBackRepo());
     }
 
 
