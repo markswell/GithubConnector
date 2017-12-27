@@ -61,7 +61,6 @@ public class TelaBuscaFragment extends Fragment {
                         obterUsuario(usuario, retrofit);
                     else
                         Toast.makeText(getContext(), "Informe um usuário.", Toast.LENGTH_LONG).show();
-
                 }catch (Exception e){
                     Toast.makeText(getContext(), "Falha no processo.", Toast.LENGTH_LONG).show();
                 }
