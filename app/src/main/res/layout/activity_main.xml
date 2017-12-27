@@ -8,8 +8,6 @@
     tools:context="com.markswell.githubconector.MainActivity"
     android:orientation="vertical">
 
-    <include layout="@layout/cabecalho"/>
-
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fragment_container"

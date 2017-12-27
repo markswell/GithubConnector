@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.markswell.githubconector.R;
@@ -19,9 +18,13 @@ import com.markswell.githubconector.model.Repositorio;
 import com.markswell.githubconector.model.Usuario;
 import com.markswell.githubconector.recycleview.RepositorioListener;
 import com.markswell.githubconector.recycleview.RepositorioRecycleView;
+import com.squareup.picasso.Picasso;
 import java.util.List;
+import de.hdodenhof.circleimageview.CircleImageView;
 
-
+/**
+ * Created by markswell on 12/26/17.
+ */
 public class TelaUsuarioGithubFragment extends Fragment {
 
     private RecyclerView recyclerView;
@@ -30,18 +33,28 @@ public class TelaUsuarioGithubFragment extends Fragment {
     private Usuario usuario;
     private Gson gson;
     private List<Repositorio> repositorios;
+    private CircleImageView foto;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
         View view = inflater.inflate(R.layout.fragment_tela_usuario_github, container, false);
         Bundle arguments = getArguments();
 
-        iniciarNome(view, arguments);
-        iniciarRepositorios(arguments);
-
-        popularListaRepositorios(view, repositorios);
+        iniciarTela(view, arguments);
 
         return view;
+    }
+
+    private void iniciarTela(View view, Bundle arguments) {
+        iniciarNome(view, arguments);
+        iniciarRepositorios(arguments);
+        iniciarImagem(view);
+        popularListaRepositorios(view, repositorios);
+    }
+
+    private void iniciarImagem(View view) {
+        foto = (CircleImageView) view.findViewById(R.id.item_foto);
+        Picasso.with(getContext()).load(usuario.getAvatar_url()).into(foto);
     }
 
     private void iniciarRepositorios(Bundle arguments) {

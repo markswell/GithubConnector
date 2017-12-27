@@ -7,6 +7,8 @@
     android:orientation="vertical"
     tools:context="com.markswell.githubconector.fragments.TelaBuscaFragment">
 
+    <include layout="@layout/cabecalho"/>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

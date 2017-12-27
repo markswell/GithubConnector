@@ -1,8 +1,6 @@
 package com.markswell.githubconector.fragments;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,8 +17,6 @@ import com.markswell.githubconector.services.RepositorioServices;
 import com.markswell.githubconector.services.UsuarioServices;
 import com.markswell.githubconector.utils.RetrofitUtils;
 import com.markswell.githubconector.utils.Url;
-
-import java.io.IOException;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;

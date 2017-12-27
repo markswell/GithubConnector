@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context="com.markswell.githubconector.fragments.TelaUsuarioGithubFragment">
 
+    <include layout="@layout/cabecalho"/>
+
     <TextView
         android:id="@+id/nome_usuario"
         android:layout_width="match_parent"
