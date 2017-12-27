@@ -80,7 +80,7 @@ public class TelaBuscaFragment extends Fragment {
     private void iniciarProgresBar() {
         progressDoalog = new ProgressDialog(getContext());
         progressDoalog.setMessage("Carregando...");
-        progressDoalog.setTitle("Bucando");
+        progressDoalog.setTitle("Buscando");
         //progressDoalog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDoalog.show();
     }
@@ -121,8 +121,10 @@ public class TelaBuscaFragment extends Fragment {
             public void onResponse(Call<List<Repositorio>> call, Response<List<Repositorio>> response) {
                 if(response.isSuccessful())
                     repositoriosGit = response.body();
-                else
+                else{
+                    progressDoalog.dismiss();
                     Toast.makeText(getContext(), "Não foi possivel encontrar repositorios.", Toast.LENGTH_LONG).show();
+                }
                 alterarTela();
             }
 
@@ -144,13 +146,14 @@ public class TelaBuscaFragment extends Fragment {
                     progressDoalog.dismiss();
                 }
                 else {
+                    progressDoalog.dismiss();
                     Toast.makeText(getContext(), "Não foi possivel encontrar o usuário.", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Usuario> call, Throwable t) {
-
+                progressDoalog.dismiss();
             }
         };
     }
