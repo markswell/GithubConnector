@@ -13,7 +13,7 @@
         android:gravity="center"
         android:text="@string/nome_usuario"/>
 
-    <android.support.v7.app.AlertController.RecycleListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/lista_repositorios"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
