@@ -17,40 +17,18 @@ import retrofit2.Retrofit;
 public class MainActivity extends AppCompatActivity {
 
 
-    private CallBackUtils utils;
+    private GerenciadorContainerFragment gerenciador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GerenciadorContainerFragment gerenciador = new GerenciadorContainerFragment(R.id.fragment_container, this);
+        gerenciador = new GerenciadorContainerFragment(R.id.fragment_container, this);
         gerenciador.inserirFragment(new TelaBuscaFragment(), savedInstanceState);
-        prencherUsuario();
-        return;
-
     }
-    private void prencherUsuario() {
-        Retrofit retrofit = new RetrofitUtils().obterRetrofit(Url.URL.endereco);
-        utils = new CallBackUtils();
-        efetuarChamada(retrofit);
-    }
-    public void efetuarChamada(Retrofit retrofit) {
-        UsuarioServices chamarUser = retrofit.create(UsuarioServices.class);
-        Call<Usuario> call = chamarUser.getUsuario("markswell");
-        call.enqueue(new Callback<Usuario>() {
-            @Override
-            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                if(response.code() == 200){
-                    Usuario body = response.body();
-                    body.getName();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Usuario> call, Throwable t) {
-
-            }
-        });
+    public GerenciadorContainerFragment getGerenciador() {
+        return gerenciador;
     }
 }

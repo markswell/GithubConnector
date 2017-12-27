@@ -1,5 +1,6 @@
 package com.markswell.githubconector.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -9,7 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import com.google.gson.Gson;
+import com.markswell.githubconector.MainActivity;
 import com.markswell.githubconector.R;
 import com.markswell.githubconector.model.Repositorio;
 import com.markswell.githubconector.model.Usuario;
@@ -18,8 +20,8 @@ import com.markswell.githubconector.services.UsuarioServices;
 import com.markswell.githubconector.utils.RetrofitUtils;
 import com.markswell.githubconector.utils.Url;
 
+import java.io.IOException;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,13 +58,39 @@ public class TelaBuscaFragment extends Fragment {
             public void onClick(View view) {
                 String usuario = login.getText().toString();
                 Retrofit retrofit = getRetrofit();
+                try{
+                    obterUsuario(usuario, retrofit);
 
-                obterUsuario(usuario, retrofit);
-                obterRepositorios(usuario, retrofit);
-
-
+                }catch (Exception e){
+                    Toast.makeText(getContext(), "Falha no processo.", Toast.LENGTH_LONG).show();
+                }
             }
         };
+    }
+
+    private void obterUsuario(String usuario, Retrofit retrofit) {
+        UsuarioServices usuarioServices = retrofit.create(UsuarioServices.class);
+        Call<Usuario> call = usuarioServices.getUsuario(usuario);
+        call.enqueue(getCallBackUsuario(usuario, retrofit));
+    }
+
+    private void alterarTela() {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.getGerenciador().trocarFragment(new TelaUsuarioGithubFragment(), obterBundle());
+    }
+
+    private Bundle obterBundle() {
+        String repositoriosGitConvertido = converteString(repositoriosGit);
+        String usuarioGitConvertido = converteString(usuarioGit);
+        Bundle bundle = new Bundle();
+        bundle.putString("usuario", usuarioGitConvertido);
+        bundle.putString("repositorios", repositoriosGitConvertido);
+        return bundle;
+    }
+
+    private String converteString(Object obj) {
+        Gson gson = new Gson();
+        return gson.toJson(obj);
     }
 
     private void obterRepositorios(String usuario, Retrofit retrofit) {
@@ -71,34 +99,13 @@ public class TelaBuscaFragment extends Fragment {
         call.enqueue(getCallBackRepositorio());
     }
 
-    private void obterUsuario(String usuario, Retrofit retrofit) {
-        UsuarioServices usuarioServices = retrofit.create(UsuarioServices.class);
-        Call<Usuario> call = usuarioServices.getUsuario(usuario);
-        call.enqueue(getCallbackUsuario());
-    }
 
     private Retrofit getRetrofit() {
         RetrofitUtils retrofitUtils = new RetrofitUtils();
         return retrofitUtils.obterRetrofit(Url.URL.endereco);
     }
 
-    @NonNull
-    private Callback<Usuario> getCallbackUsuario() {
-        return new Callback<Usuario>() {
-            @Override
-            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                if(response.isSuccessful())
-                    usuarioGit = response.body();
-                else
-                    Toast.makeText(getContext(), "Usuario não encontrado.", Toast.LENGTH_LONG).show();
-            }
 
-            @Override
-            public void onFailure(Call<Usuario> call, Throwable t) {
-                    Toast.makeText(getContext(), "Não foi possivel efetuar a busca, verifique sua conexão.", Toast.LENGTH_LONG).show();
-            }
-        };
-    }
 
 
     public Callback<List<Repositorio>> getCallBackRepositorio() {
@@ -109,11 +116,34 @@ public class TelaBuscaFragment extends Fragment {
                     repositoriosGit = response.body();
                 else
                     Toast.makeText(getContext(), "Não foi possivel encontrar repositorios.", Toast.LENGTH_LONG).show();
+                alterarTela();
             }
 
             @Override
             public void onFailure(Call<List<Repositorio>> call, Throwable t) {
                     Toast.makeText(getContext(), "Não foi possivel efetuar a busca, verifique sua conexão.", Toast.LENGTH_LONG).show();
+
+            }
+        };
+    }
+
+
+    public Callback<Usuario> getCallBackUsuario(final String usuario, final Retrofit retrofit) {
+        return new Callback<Usuario>() {
+            @Override
+            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                if(response.isSuccessful()){
+                    usuarioGit = response.body();
+                    obterRepositorios(usuario, retrofit);
+                }
+                else {
+                    Toast.makeText(getContext(), "Não foi possivel encontrar o usuario.", Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Usuario> call, Throwable t) {
 
             }
         };
