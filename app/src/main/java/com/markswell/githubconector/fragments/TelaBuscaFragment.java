@@ -1,6 +1,7 @@
 package com.markswell.githubconector.fragments;
 
 import android.app.ProgressDialog;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -54,6 +55,10 @@ public class TelaBuscaFragment extends Fragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!verificaConexao()){
+                    Toast.makeText(getContext(), "Habilite sua conexão.", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 String usuario = login.getText().toString();
                 Retrofit retrofit = getRetrofit();
                 try{
@@ -66,6 +71,19 @@ public class TelaBuscaFragment extends Fragment {
                 }
             }
         };
+    }
+
+    public  boolean verificaConexao() {
+        boolean conectado;
+        ConnectivityManager conectivtyManager = (ConnectivityManager) getContext().getSystemService(getContext().CONNECTIVITY_SERVICE);
+        if (conectivtyManager.getActiveNetworkInfo() != null
+                && conectivtyManager.getActiveNetworkInfo().isAvailable()
+                && conectivtyManager.getActiveNetworkInfo().isConnected()) {
+            conectado = true;
+        } else {
+            conectado = false;
+        }
+        return conectado;
     }
 
     private void obterUsuario(String usuario, Retrofit retrofit) {
